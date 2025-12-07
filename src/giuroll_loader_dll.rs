@@ -2,7 +2,7 @@ use std::ffi::CString;
 use std::time::Duration;
 use std::{os::windows::ffi::OsStringExt, path::Path, ptr::null_mut, thread};
 
-use winapi::shared::minwindef::{FARPROC, HMODULE};
+use winapi::shared::minwindef::FARPROC;
 use winapi::um::libloaderapi::{FreeLibrary, FreeLibraryAndExitThread};
 use winapi::{
     shared::minwindef::{DWORD, HINSTANCE, LPVOID},
@@ -45,7 +45,7 @@ unsafe fn try_load_giuroll(giuroll_path: Vec<u16>) -> Result<(), String> {
     }
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "stdcall" fn DllMain(module: HINSTANCE, reason: DWORD, _: LPVOID) -> i32 {
     if reason == DLL_PROCESS_ATTACH {
         println!("loader DllMain");
@@ -96,19 +96,19 @@ unsafe fn load_by_swrstoys() {
     panic!("giuroll_loader_dll.dll should not be loaded by SWRSToys");
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn Initialize(_module: HINSTANCE) -> bool {
     load_by_swrstoys();
     false
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "cdecl" fn CheckVersion(_a: *const [u8; 16]) -> bool {
     load_by_swrstoys();
     false
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn getPriority() -> i32 {
     load_by_swrstoys();
     1000
