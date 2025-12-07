@@ -13,7 +13,7 @@ use winapi::{
         winuser::{MessageBoxA, MB_ICONERROR},
     },
 };
-unsafe fn try_load_giuroll(giuroll_path: Vec<u16>) -> Result<(), String> {
+unsafe fn try_load_giuroll(giuroll_path: Vec<u16>) -> Result<(), String> { unsafe {
     println!("loader thread sppawn");
     let giuroll = LoadLibraryW(giuroll_path.as_ptr());
     if giuroll == null_mut() {
@@ -43,10 +43,10 @@ unsafe fn try_load_giuroll(giuroll_path: Vec<u16>) -> Result<(), String> {
     } else {
         Ok(())
     }
-}
+}}
 
 #[unsafe(no_mangle)]
-pub unsafe extern "stdcall" fn DllMain(module: HINSTANCE, reason: DWORD, _: LPVOID) -> i32 {
+pub unsafe extern "stdcall" fn DllMain(module: HINSTANCE, reason: DWORD, _: LPVOID) -> i32 { unsafe {
     if reason == DLL_PROCESS_ATTACH {
         println!("loader DllMain");
         let mut dat = [0u16; 1025];
@@ -80,9 +80,9 @@ pub unsafe extern "stdcall" fn DllMain(module: HINSTANCE, reason: DWORD, _: LPVO
     }
 
     1
-}
+}}
 
-unsafe fn load_by_swrstoys() {
+unsafe fn load_by_swrstoys() { unsafe {
     MessageBoxA(
         std::ptr::null_mut(),
         CString::new("Error").unwrap().as_ptr(),
@@ -94,22 +94,22 @@ unsafe fn load_by_swrstoys() {
         MB_ICONERROR,
     );
     panic!("giuroll_loader_dll.dll should not be loaded by SWRSToys");
-}
+}}
 
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn Initialize(_module: HINSTANCE) -> bool {
+pub unsafe extern "C" fn Initialize(_module: HINSTANCE) -> bool { unsafe {
     load_by_swrstoys();
     false
-}
+}}
 
 #[unsafe(no_mangle)]
-pub unsafe extern "cdecl" fn CheckVersion(_a: *const [u8; 16]) -> bool {
+pub unsafe extern "cdecl" fn CheckVersion(_a: *const [u8; 16]) -> bool { unsafe {
     load_by_swrstoys();
     false
-}
+}}
 
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn getPriority() -> i32 {
+pub unsafe extern "C" fn getPriority() -> i32 { unsafe {
     load_by_swrstoys();
     1000
-}
+}}

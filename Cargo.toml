@@ -16,3 +16,13 @@ path = "src/main.rs"
 [dependencies]
 winapi = { version = "0.3", features = ["minwindef", "winnt", "libloaderapi", "processthreadsapi", "memoryapi", "errhandlingapi", "handleapi", "tlhelp32", "synchapi", "winbase", "winerror", "winuser"] }
 widestring = "0.4.3"
+
+[build-dependencies]
+embed-resource = "2.4"
+
+[profile.release]
+# Optimize for size - smaller binaries are less suspicious
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = "symbols"
